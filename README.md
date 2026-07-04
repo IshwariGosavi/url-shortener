@@ -1,7 +1,5 @@
 # URL Shortener
 
-# URL Shortener
-
 A full-stack URL shortener built with Node.js, Express, and MySQL. Paste a long URL and get a short, shareable link back.
 
 🔗 **Live Demo:** [url-shortener-bf7a.onrender.com](https://url-shortener-bf7a.onrender.com)
