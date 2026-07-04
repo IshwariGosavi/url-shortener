@@ -33,8 +33,8 @@ app.post('/api/shorten', async (req, res) => {
       'INSERT INTO urls (long_url, short_code) VALUES (?, ?)',
       [longUrl, shortCode]
     );
-    const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT}`;
-    res.json({ shortUrl: `http://localhost:${process.env.PORT}/${shortCode}` });
+   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT}`;
+   res.json({ shortUrl: `${baseUrl}/${shortCode}` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Something went wrong' });
