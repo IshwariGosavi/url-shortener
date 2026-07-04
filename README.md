@@ -3,7 +3,7 @@
 A full-stack URL shortener built with Node.js, Express, and MySQL. Paste a long URL and get a short, shareable link back.
 
 🔗 **Live Demo:** [url-shortener-bf7a.onrender.com](https://url-shortener-bf7a.onrender.com)
->   Note: hosted on a free tier, so the first load might take 30-50 seconds if the site has been inactive.
+> Note: hosted on a free tier, so the first load might take 30-50 seconds if the site has been inactive.
 
 ## Features
 - Shorten any long URL into a random 6-character short code
