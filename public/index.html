@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>URL Shortener</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      max-width: 500px;
+      margin: 100px auto;
+      text-align: center;
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      color: #1e3a5f;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      color: #6b7280;
+      margin-top: 0;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 280px;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #4a90e2;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 5px;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #357abd;
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 15px;
+      word-break: break-all;
+      color: #333;
+    }
+
+    #result a {
+      color: #4a90e2;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    #result a:hover {
+      text-decoration: underline;
+    }
+
+    #copyBtn {
+      margin-top: 12px;
+      margin-left: 0;
+      background-color: #10b981;
+    }
+
+    #copyBtn:hover {
+      background-color: #059669;
+    }
+
+    #copyBtn.copied {
+      background-color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔗URL Shortener</h1>
+    <p class="subtitle">Paste a long URL below to get a short one</p>
+
+    <input id="urlInput" type="text" placeholder="https://example.com/very-long-url" />
+    <button onclick="shortenUrl()">Shorten</button>
+
+    <p id="result"></p>
+    <button id="copyBtn" onclick="copyToClipboard()" style="display:none;">Copy</button>
+  </div>
+
+  <script>
+    let lastShortUrl = '';
+
+    async function shortenUrl() {
+      const longUrl = document.getElementById('urlInput').value;
+      const resultBox = document.getElementById('result');
+      const copyBtn = document.getElementById('copyBtn');
+
+      if (!longUrl) {
+        resultBox.innerText = 'Please enter a URL first';
+        copyBtn.style.display = 'none';
+        return;
+      }
+
+      resultBox.innerText = 'Shortening...';
+      copyBtn.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/shorten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ longUrl })
+        });
+
+        const data = await res.json();
+
+        if (data.shortUrl) {
+          resultBox.innerHTML = `Your short URL: <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+          lastShortUrl = data.shortUrl;
+          copyBtn.style.display = 'inline-block';
+          copyBtn.classList.remove('copied');
+          copyBtn.innerText = 'Copy';
+        } else {
+          resultBox.innerText = data.error || 'Something went wrong';
+        }
+      } catch (err) {
+        resultBox.innerText = 'Error connecting to server';
+      }
+    }
+
+    function copyToClipboard() {
+      const copyBtn = document.getElementById('copyBtn');
+
+      navigator.clipboard.writeText(lastShortUrl).then(() => {
+        copyBtn.innerText = '✅ Copied!';
+        copyBtn.classList.add('copied');
+
+        setTimeout(() => {
+          copyBtn.innerText = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        alert('Could not copy — please copy manually');
+      });
+    }
+  </script>
+</body>
+</html>
